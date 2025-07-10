@@ -2,7 +2,7 @@ import java.io.*;
 
 public class monitoring {
     public static void main(String[] args) {
-        String host = "google.com"; // Change to your host
+        String host = "chpc.ac.za";
         System.out.println("Pinging " + host + "...");
 
         try {
