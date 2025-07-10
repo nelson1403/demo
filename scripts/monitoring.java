@@ -1,21 +1,33 @@
-import java.io.IOException;
-import java.net.InetAddress;
+import java.io.*;
 
 public class monitoring {
     public static void main(String[] args) {
-        String host = "google.com"; // change to any IP or hostname
-
+        String host = "google.com"; // Change to your host
         System.out.println("Pinging " + host + "...");
 
         try {
-            InetAddress inet = InetAddress.getByName(host);
-            if (inet.isReachable(2000)) { // 2-second timeout
+            Process process = Runtime.getRuntime().exec("ping -c 1 " + host); // For Linux/Mac
+            // For Windows, use: ping -n 1
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            boolean reachable = false;
+
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+                if (line.contains("1 packets transmitted") || line.contains("TTL=")) {
+                    reachable = true;
+                }
+            }
+
+            int exitCode = process.waitFor();
+            if (reachable && exitCode == 0) {
                 System.out.println(host + " is reachable ✅");
             } else {
                 System.out.println(host + " is NOT reachable ❌");
             }
-        } catch (IOException e) {
-            System.out.println("Erro: " + e.getMessage());
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 }
+
